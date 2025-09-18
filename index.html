@@ -1,1 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>PWA Notificações</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#007aff">
+</head>
+<body>
+  <h1>🔔 PWA Notificação</h1>
+  <button id="notifyBtn">Enviar Notificação Local</button>
 
+  <script>
+    // registra o service worker
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js");
+    }
+
+    // pede permissão e dispara notificação
+    document.getElementById("notifyBtn").addEventListener("click", async () => {
+      if (Notification.permission !== "granted") {
+        await Notification.requestPermission();
+      }
+      if (Notification.permission === "granted") {
+        new Notification("🚀 Notificação local!", {
+          body: "Isso funciona no iPhone e Mac via PWA!",
+          icon: "icon.png"
+        });
+      }
+    });
+  </script>
+</body>
+</html>
