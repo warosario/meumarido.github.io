@@ -2,32 +2,54 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>PWA Notificações</title>
+  <title>PWA Push</title>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#007aff">
 </head>
 <body>
-  <h1>🔔 PWA Notificação</h1>
-  <button id="notifyBtn">Enviar Notificação Local</button>
+  <h1>🔔 PWA Push Notifications</h1>
+  <button id="subscribeBtn">Ativar Notificações</button>
 
   <script>
-    // registra o service worker
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("service-worker.js");
-    }
+    const publicVapidKey = "CHAVE_PUBLICA_VAPID_AQUI";
 
-    // pede permissão e dispara notificação
-    document.getElementById("notifyBtn").addEventListener("click", async () => {
-      if (Notification.permission !== "granted") {
-        await Notification.requestPermission();
-      }
-      if (Notification.permission === "granted") {
-        new Notification("🚀 Notificação local!", {
-          body: "Isso funciona no iPhone e Mac via PWA!",
-          icon: "icon.png"
+    // registra o SW e pede inscrição push
+    async function subscribe() {
+      if ("serviceWorker" in navigator) {
+        const reg = await navigator.serviceWorker.register("service-worker.js");
+
+        const subscription = await reg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
+        });
+
+        console.log("Subscrição push:", JSON.stringify(subscription));
+        // Aqui você envia subscription para seu servidor
+        await fetch("/subscribe", {
+          method: "POST",
+          body: JSON.stringify(subscription),
+          headers: { "Content-Type": "application/json" }
         });
       }
+    }
+
+    document.getElementById("subscribeBtn").addEventListener("click", async () => {
+      const perm = await Notification.requestPermission();
+      if (perm === "granted") {
+        subscribe();
+      }
     });
+
+    function urlBase64ToUint8Array(base64String) {
+      const padding = "=".repeat((4 - base64String.length % 4) % 4);
+      const base64 = (base64String + padding).replace(/\-/g, "+").replace(/_/g, "/");
+      const rawData = window.atob(base64);
+      const outputArray = new Uint8Array(rawData.length);
+      for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+      }
+      return outputArray;
+    }
   </script>
 </body>
 </html>
