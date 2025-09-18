@@ -6,11 +6,11 @@ const app = express();
 app.use(bodyParser.json());
 
 // gere suas chaves VAPID uma vez com: npx web-push generate-vapid-keys
-const publicVapidKey = "BDvDSdmiu9NoXTP7xRmaDdpUHMfO5oFmMpXnGf8u_Uf8KBqrT-tkP94UD5_cggz2hbfE0H1VNddM3vlrVtQ0VoU";
-const privateVapidKey = "vGlTQngEMj_CH-XCRMlY0QCXgaJdyz6Ph3KDINQLPfk";
+const publicVapidKey = "BFPmV--eH6xVPgAnKyCgEFr_k7uXtgn25KkY4sVfS4HLNh6_SLDDHpP8pIbFMEAWCu9rMPvMZ9PWieicH9oRPUg";
+const privateVapidKey = "RayBBqi114I9cpYix8wmOWpzdBWj-0Ke4hY7RA_Oq08";
 
 webpush.setVapidDetails(
-  "mailto:seuemail@dominio.com",
+  "mailto:william.rosario@gmail.com",
   publicVapidKey,
   privateVapidKey
 );
